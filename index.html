@@ -1,0 +1,96 @@
+<meta charset="UTF-8">
+
+<head>
+    <title>Uh Oh</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2A2C31
+        }
+
+        button {
+            background-color: #DDD;
+            border: none;
+            color: black;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 58px;
+            font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+            cursor: pointer;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%)
+        }
+
+        button:hover {
+            background-color: #EEE;
+        }
+
+    </style>
+
+    <script src="./howler.min.js"></script>
+
+    <script>
+        let localDebug = false
+        let port = 6968
+        let ip = localDebug ? 'localhost' : 'samsonclose.me'
+        var ws = null
+        var connected = false
+
+        let path = './smoothie.mp3'
+        var audio = new Howl({
+            src: [path]
+        })
+
+        function connect() {
+
+            if (!localDebug) {
+                ws = new WebSocket('wss://' + ip + ':' + port)
+            } else {
+                ws = new WebSocket('ws://' + ip + ':' + port)
+            }
+
+            ws.onclose = function(evt) {
+                console.log('The WebSocket was closed [' + evt.code + '] (' + evt.reason + ')')
+
+                connected = false
+                connect()
+            }
+
+            ws.onopen = function(evt) {
+                console.log('The WebSocket was opened succesfully!')
+                connected = true
+            }
+
+            ws.onmessage = function(evt) {
+                console.log('Playing sound')
+                play()
+            }
+        }
+
+        function play() {
+            audio.play()
+        }
+
+        function send() {
+            if (connected) {
+                console.log('Sending request')
+                ws.send('play')
+            } else {
+                console.log('not connected to server')
+                // TODO play locally anyways?
+            }
+        }
+
+        connect()
+
+    </script>
+</head>
+
+<body>
+    <button onclick='send()'>Smoothie</button>
+</body>
