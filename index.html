@@ -11,14 +11,11 @@
 
         button {
             background-color: #DDD;
-            border: none;
             color: black;
+            border: none;
             padding: 15px 32px;
             text-align: center;
-            text-decoration: none;
-            display: inline-block;
             font-size: 58px;
-            font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
             cursor: pointer;
             position: absolute;
             left: 50%;
@@ -30,12 +27,44 @@
             background-color: #EEE;
         }
 
+        .font {
+            font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+        }
+
+        #connecting {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            position: absolute;
+            color: #EEE;
+            text-align: center;
+            font-size: 28px;
+            left: 50%;
+            top: calc(50% - 200px);
+            transform: translate(-50%, -50%)
+        }
+
+        #users {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            position: absolute;
+            color: #EEE;
+            text-align: center;
+            font-size: 28px;
+            left: 50%;
+            top: calc(50% - 120px);
+            transform: translate(-50%, -50%)
+        }
+
     </style>
 
     <script src="./howler.min.js"></script>
 
     <script>
-        let localDebug = false
+        let localDebug = true
         let port = 6968
         let ip = localDebug ? 'localhost' : 'samsonclose.me'
         var ws = null
@@ -57,18 +86,28 @@
             ws.onclose = function(evt) {
                 console.log('The WebSocket was closed [' + evt.code + '] (' + evt.reason + ')')
 
+                document.getElementById('connecting').style.visibility = 'visible'
                 connected = false
                 connect()
             }
 
             ws.onopen = function(evt) {
                 console.log('The WebSocket was opened succesfully!')
+                document.getElementById('connecting').style.visibility = 'hidden'
                 connected = true
             }
 
             ws.onmessage = function(evt) {
                 console.log('Playing sound')
-                play()
+                var pack = JSON.parse(evt.data)
+                switch (pack.type) {
+                    case 'play':
+                        play()
+                        break
+                    case 'users':
+                        document.getElementById('users').innerHTML = 'Users Online: ' + pack.num
+                        break
+                }
             }
         }
 
@@ -79,7 +118,9 @@
         function send() {
             if (connected) {
                 console.log('Sending request')
-                ws.send('play')
+                ws.send(JSON.stringify({
+                    type: 'play'
+                }))
             } else {
                 console.log('not connected to server')
                 // TODO play locally anyways?
@@ -92,5 +133,7 @@
 </head>
 
 <body>
-    <button onclick='send()'>Smoothie</button>
+    <p id='connecting' class='font'>Connecting to server...</p>
+    <p id='users' class='font'>Users Online: 0</p>
+    <button class='font' onclick='send()'>Smoothie</button>
 </body>

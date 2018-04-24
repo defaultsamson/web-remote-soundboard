@@ -1,5 +1,6 @@
 let localDebug = true
 let port = 6968
+let COOLDOWN = 2000
 
 const WebSocket = require('ws');
 const express = require('express')
@@ -37,26 +38,55 @@ function connect() {
         ws.on('close', function close() {
             console.log('removing connection')
             removeConnection(ws)
+            updateUsers()
         })
 
         ws.on('error', function error(e) {
             console.log('removing connection')
             removeConnection(ws)
+            updateUsers()
         })
 
-        ws.on('message', function incoming(msg) {
-            console.log('Recieving request')
-            for (i in connections) {
-                try {
-                    connections[i].send('play')
-                } catch (e) {
-
+        ws.on('message', function incoming(data) {
+            try {
+                var pack = JSON.parse(data)
+                switch (pack.type) {
+                    case 'play':
+                        if (Date.now() - ws.last > COOLDOWN) {
+                            ws.last = Date.now()
+                            broadcast({
+                                type: 'play'
+                            })
+                        }
+                        break
                 }
+            } catch (e) {
+
             }
         })
 
+        ws.last = Date.now()
         connections.push(ws)
-        console.log('Recieving connection')
+        updateUsers()
+    })
+
+    console.log('Server Started')
+}
+
+function broadcast(obj) {
+    for (i in connections) {
+        try {
+            connections[i].send(JSON.stringify(obj))
+        } catch (e) {
+
+        }
+    }
+}
+
+function updateUsers() {
+    broadcast({
+        type: 'users',
+        num: connections.length
     })
 }
 
