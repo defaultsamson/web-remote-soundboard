@@ -9,26 +9,26 @@
             background-color: #2A2C31
         }
 
-        button {
-            background-color: #DDD;
-            color: black;
-            border: none;
-            padding: 15px 32px;
-            text-align: center;
-            font-size: 58px;
+        .btn {
             cursor: pointer;
             position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%)
-        }
-
-        button:hover {
-            background-color: #EEE;
         }
 
         .font {
             font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+        }
+
+        #smoothie {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 58px;
+            text-align: center;
+            padding: 15px 32px;
+            color: #2A2C31;
+            background-color: white;
+            border: none;
+            overflow: hidden;
         }
 
         #connecting {
@@ -37,7 +37,7 @@
             -ms-user-select: none;
             user-select: none;
             position: absolute;
-            color: #EEE;
+            color: white;
             text-align: center;
             font-size: 28px;
             left: 50%;
@@ -51,12 +51,27 @@
             -ms-user-select: none;
             user-select: none;
             position: absolute;
-            color: #EEE;
+            color: white;
             text-align: center;
             font-size: 28px;
             left: 50%;
             top: calc(50% - 120px);
             transform: translate(-50%, -50%)
+        }
+
+        .arr {
+            top: 50%;
+            padding: 20px;
+        }
+
+        .right {
+            right: calc(50% - 280px);
+            transform: translate(-50%, -50%)
+        }
+
+        .left {
+            left: calc(50% - 280px);
+            transform: scaleX(-1) translate(-50%, -50%)
         }
 
     </style>
@@ -135,5 +150,7 @@
 <body>
     <p id='connecting' class='font'>Connecting to server...</p>
     <p id='users' class='font'>Users Online: 0</p>
-    <button class='font' onclick='send()'>Smoothie</button>
+    <button id='smoothie' class='font btn' onclick='send()'>Smoothie</button>
+    <img class='left arr btn' src='/arrow.png' width=36/>
+    <img class='right arr btn' src='/arrow.png' width=36/>
 </body>

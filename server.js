@@ -36,13 +36,11 @@ function connect() {
     wss.on('connection', function connection(ws) {
 
         ws.on('close', function close() {
-            console.log('removing connection')
             removeConnection(ws)
             updateUsers()
         })
 
         ws.on('error', function error(e) {
-            console.log('removing connection')
             removeConnection(ws)
             updateUsers()
         })
