@@ -1,4 +1,4 @@
-let localDebug = true
+let localDebug = false
 let port = 6968
 let COOLDOWN = 2000
 
