@@ -1,7 +1,7 @@
-let localDebug = true
+let localDebug = false
 let port = 6968
 let COOLDOWN = 2000
-let MAX_SOUND = 1
+let MAX_SOUND = 4
 
 const WebSocket = require('ws');
 const express = require('express')

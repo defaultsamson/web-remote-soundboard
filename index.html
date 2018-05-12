@@ -79,6 +79,21 @@
             transform: translate(-50%, -50%)
         }
 
+        #playingText {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            position: absolute;
+            color: white;
+            text-align: center;
+            font-size: 28px;
+            left: 50%;
+            top: calc(50% + 68px);
+            transform: translate(-50%, -50%);
+            visibility: hidden;
+        }
+
         .arr {
             top: 50%;
             padding: 20px;
@@ -99,7 +114,7 @@
     <script src="./howler.min.js"></script>
 
     <script>
-        let localDebug = true
+        let localDebug = false
         let port = 6968
         let ip = localDebug ? 'localhost' : 'samsonclose.me'
         var ws = null
@@ -110,7 +125,7 @@
         })(navigator.userAgent || navigator.vendor || window.opera)
         console.log('Mobile: ' + mobile)
 
-        const MAX_SOUND = 1
+        const MAX_SOUND = 4
         var sounds = []
         sounds.push({
             name: 'Smoothie',
@@ -122,6 +137,24 @@
             name: 'Thursday',
             audio: new Howl({
                 src: ['./sounds/thursday.mp3']
+            })
+        })
+        sounds.push({
+            name: '\"Yeah\"',
+            audio: new Howl({
+                src: ['./sounds/yeah.mp3']
+            })
+        })
+        sounds.push({
+            name: 'Say Rat',
+            audio: new Howl({
+                src: ['./sounds/sayrat.mp3']
+            })
+        })
+        sounds.push({
+            name: 'Be A Rat',
+            audio: new Howl({
+                src: ['./sounds/bearat.mp3']
             })
         })
 
@@ -145,7 +178,7 @@
 
         function load() {
             doGuiResize()
-            loadSound(0)
+            loadSound(1)
         }
 
         function loadSound(i) {
@@ -194,8 +227,13 @@
 
         function play(i) {
             if (i >= 0 && i <= MAX_SOUND) {
-                console.log('Playing sound ' + i + ', ' + sounds[i].name)
+                document.getElementById('playingText').style.visibility = 'visible'
+                document.getElementById('playingText').innerHTML = 'Playing ' + sounds[i].name
                 sounds[i].audio.play()
+
+                setTimeout(() => {
+                    document.getElementById('playingText').style.visibility = 'hidden'
+                }, 2000)
             }
         }
 
@@ -248,5 +286,6 @@
         <button id='smoothie' class='font btn' onclick='send()'>Smoothie</button>
         <img class='left arr btn' src='./left.png' width=36 onclick='left()' />
         <img class='right arr btn' src='./right.png' width=36 onclick='right()' />
+        <p id='playingText' class='font'>Playing Sound...</p>
     </div>
 </body>
