@@ -125,7 +125,7 @@
         })(navigator.userAgent || navigator.vendor || window.opera)
         console.log('Mobile: ' + mobile)
 
-        const MAX_SOUND = 4
+        const MAX_SOUND = 5
         var sounds = []
         sounds.push({
             name: 'Smoothie',
@@ -155,6 +155,12 @@
             name: 'Be A Rat',
             audio: new Howl({
                 src: ['./sounds/bearat.mp3']
+            })
+        })
+        sounds.push({
+            name: 'Tang Jam',
+            audio: new Howl({
+                src: ['./sounds/tangjam.mp3']
             })
         })
 
