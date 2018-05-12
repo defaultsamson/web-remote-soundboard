@@ -1,6 +1,7 @@
-let localDebug = false
+let localDebug = true
 let port = 6968
 let COOLDOWN = 2000
+let MAX_SOUND = 1
 
 const WebSocket = require('ws');
 const express = require('express')
@@ -47,23 +48,25 @@ function connect() {
 
         ws.on('message', function incoming(data) {
             try {
+                console.log("got request")
                 var pack = JSON.parse(data)
                 switch (pack.type) {
                     case 'play':
                         if (Date.now() - ws.last > COOLDOWN) {
                             ws.last = Date.now()
                             broadcast({
-                                type: 'play'
+                                type: 'play',
+                                sound: Math.max(0, Math.min(pack.sound, MAX_SOUND))
                             })
                         }
                         break
                 }
             } catch (e) {
-
+                // :)
             }
         })
 
-        ws.last = Date.now()
+        ws.last = Date.now() - COOLDOWN
         connections.push(ws)
         updateUsers()
     })
